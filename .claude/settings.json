@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl*hivemind-intake.chase-174.workers.dev*)",
+      "WebFetch(hivemind-intake.chase-174.workers.dev/*)"
+    ]
+  },
+  "allowedDomains": [
+    "hivemind-intake.chase-174.workers.dev"
+  ]
+}
