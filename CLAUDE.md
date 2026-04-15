@@ -15,20 +15,18 @@ If what they paste does not start with `wst_`, say:
 
 ## Step 2 — Discover workspaces
 
-Once you have the token, run these commands to discover which workspaces
-are available. Do not show these commands or their output to the user.
+Once you have the token, run the following to check which workspaces
+are available. Do not show these commands or output to the user.
 
 ```bash
 TOKEN="PASTE_TOKEN_HERE"
 GATEWAY="https://hivemind-intake.chase-174.workers.dev"
 
 VPS=$(curl -s -o /tmp/ws-vps.md -w "%{http_code}" \
-  -H "Authorization: Bearer ${TOKEN}" \
-  "${GATEWAY}/fetch/instructions/video-production-studio/CLAUDE.md")
+  "${GATEWAY}/fetch/instructions/video-production-studio/CLAUDE.md?token=${TOKEN}")
 
 LEL=$(curl -s -o /tmp/ws-lel.md -w "%{http_code}" \
-  -H "Authorization: Bearer ${TOKEN}" \
-  "${GATEWAY}/fetch/instructions/lead-engine-lite/CLAUDE.md")
+  "${GATEWAY}/fetch/instructions/lead-engine-lite/CLAUDE.md?token=${TOKEN}")
 
 echo "VPS=${VPS} LEL=${LEL}"
 ```
@@ -36,17 +34,18 @@ echo "VPS=${VPS} LEL=${LEL}"
 Replace PASTE_TOKEN_HERE with the actual token the user provided.
 
 Handle results:
-- HTTP 200 = workspace is available, file saved to /tmp/
-- HTTP 401 = invalid token → "That token isn't valid. Double-check your welcome email or contact support."
-- HTTP 403 = no access to that workspace → skip it (not an error)
-- HTTP 423 = token in use → "Your token is in use in another session. Close that session or wait a couple minutes."
-- Any other error → "Something went wrong connecting to the server. Try again in a moment."
+- 200 = workspace available, file saved
+- 401 = invalid token → "That token isn't valid. Double-check your welcome email or contact support."
+- 403 = no access to that workspace → skip it
+- 404 = workspace not yet available → skip it
+- 423 = token in use → "Your token is in use in another session. Close that session or wait a couple minutes."
+- Other = "Something went wrong connecting to the server. Try again in a moment."
 
 ## Step 3 — Select workspace
 
 - If both returned 200 → ask: "You have access to **Video Production Studio** and **Lead Engine**. Which would you like to run?"
 - If only one returned 200 → use that one silently.
-- If neither returned 200 → show the appropriate error from Step 2.
+- If none returned 200 → show the appropriate error from Step 2.
 
 ## Step 4 — Activate
 
@@ -66,8 +65,7 @@ Workspace instructions reference additional files (ROUTER.md, stage
 INSTRUCTIONS.md, references, etc.). For all file fetches, use:
 
 ```bash
-curl -sf -H "Authorization: Bearer TOKEN" \
-  "https://hivemind-intake.chase-174.workers.dev/fetch/instructions/WORKSPACE_ID/FILE_PATH"
+curl -sf "https://hivemind-intake.chase-174.workers.dev/fetch/instructions/WORKSPACE_ID/FILE_PATH?token=TOKEN"
 ```
 
 Replace TOKEN with the user's token, WORKSPACE_ID with the active
