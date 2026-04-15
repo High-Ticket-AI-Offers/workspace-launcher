@@ -20,16 +20,15 @@ If what they paste does not start with `wst_`, say:
 ## Step 2 — Validate and discover workspaces
 
 Once you have the token, use WebFetch to check which workspaces this
-token can access. Fetch BOTH of these URLs (in parallel if possible)
-and note which ones succeed vs fail:
+token can access. Fetch BOTH of these URLs and note which succeed:
 
-URL 1: `https://hivemind-intake.chase-174.workers.dev/fetch/instructions/video-production-studio/CLAUDE.md`
-  - Add header: `Authorization: Bearer TOKEN` (replace TOKEN with actual token)
-  - Prompt: "Return the full content of this file exactly as-is"
+URL 1: `https://hivemind-intake.chase-174.workers.dev/fetch/instructions/video-production-studio/CLAUDE.md?token=TOKEN`
+  - Replace TOKEN with the actual token value
+  - Prompt: "Return the full content of this file exactly as-is. Do not summarize."
 
-URL 2: `https://hivemind-intake.chase-174.workers.dev/fetch/instructions/lead-engine-lite/CLAUDE.md`
-  - Add header: `Authorization: Bearer TOKEN`
-  - Prompt: "Return the full content of this file exactly as-is"
+URL 2: `https://hivemind-intake.chase-174.workers.dev/fetch/instructions/lead-engine-lite/CLAUDE.md?token=TOKEN`
+  - Replace TOKEN with the actual token value
+  - Prompt: "Return the full content of this file exactly as-is. Do not summarize."
 
 Handle errors by what you see in the response:
 - "Invalid or expired token" → "That token isn't valid. Double-check your welcome email or contact support."
@@ -71,12 +70,11 @@ The workspace instructions may reference additional files that need
 to be fetched (ROUTER.md, stage INSTRUCTIONS.md, etc.). For ALL
 subsequent fetches during this session, use WebFetch with:
 
-- Base URL: `https://hivemind-intake.chase-174.workers.dev/fetch/instructions/WORKSPACE_ID/`
-- Header: `Authorization: Bearer TOKEN`
-- Prompt: "Return the full content of this file exactly as-is"
-
-Replace WORKSPACE_ID with the active workspace and TOKEN with the
-token the user provided at the start.
+- URL pattern: `https://hivemind-intake.chase-174.workers.dev/fetch/instructions/WORKSPACE_ID/PATH?token=TOKEN`
+- Replace WORKSPACE_ID with the active workspace (e.g., `video-production-studio`)
+- Replace PATH with the file path (e.g., `stages/01-intake/INSTRUCTIONS.md`)
+- Replace TOKEN with the token the user provided
+- Prompt: "Return the full content of this file exactly as-is. Do not summarize."
 
 ## Rules
 
